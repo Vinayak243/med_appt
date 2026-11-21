@@ -5,7 +5,9 @@ import { Routes, Route, Link } from 'react-router-dom'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
+import DoctorCard from './Components/DoctorCard/DoctorCard'
 import './App.css'
+import BookingConsultation from './Components/BookingConsultation/BookingConsultation'
 
 // Import Instant Consultation component
 import InstantConsultation from './Components/InstantConsultationBooking/InstantConsultation'
@@ -24,7 +26,11 @@ function App() {
       </nav>
 
       {/* Application Routes */}
+      <Route path="/doctors" element={<DoctorCard />} />
       <Routes>
+        <Routes>
+  <Route path="/booking-consultation" element={<BookingConsultation />} />
+</Routes>
         <Route
           path="/instant-consultation"
           element={<InstantConsultation />}

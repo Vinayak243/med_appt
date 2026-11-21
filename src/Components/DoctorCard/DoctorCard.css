@@ -1,0 +1,194 @@
+
+.doctor-card-page {
+    width: 100%;
+    padding: 20px 15px;
+    text-align: center;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.doctor-card-page > h2 {
+    font-size: 20px;
+    color: #414146;
+    margin: 10px 0;
+}
+
+.doctor-card-page > h3 {
+    font-size: 15px;
+    color: #414146;
+    margin-bottom: 25px;
+}
+
+.doctor-card-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 15px;
+    width: 100%;
+}
+
+.doctor-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+}
+
+.doctor-card-details-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px 10px 0;
+    text-align: center;
+}
+
+.doctor-image,
+.doctor-placeholder {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.doctor-placeholder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f0f0f5;
+    border-radius: 50%;
+    color: #bfc8d4;
+    font-size: 65px;
+}
+
+.doctor-card-details-container h3 {
+    font-size: 14px;
+    color: #414146;
+    margin: 5px 0;
+}
+
+.doctor-card-details-container p {
+    font-size: 13px;
+    color: #414146;
+    margin: 3px 0;
+}
+
+.doctor-experience {
+    font-size: 11px !important;
+    color: #787887 !important;
+    font-weight: 600;
+}
+
+.doctor-rating {
+    font-size: 11px;
+    margin: 5px 0 25px;
+    color: #414146;
+}
+
+.doctor-rating span {
+    color: #ffc107;
+    font-size: 16px;
+    margin-left: 4px;
+}
+
+.book-appointment-btn {
+    width: 100%;
+    min-height: 54px;
+    background-color: #087bfa;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    margin-top: auto;
+}
+
+.book-appointment-btn:hover {
+    background-color: #0069d9;
+}
+
+.doctor-card-details-container > div:last-child {
+    width: 100%;
+}
+
+@media (max-width: 700px) {
+    .doctor-card-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 450px) {
+    .doctor-card-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.doctor-card-options-container {
+    width: 100%;
+    margin-top: auto;
+}
+
+.doctorbg {
+    background: #fff;
+    min-height: 400px;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.doctor-card-profile-image-container {
+    display: flex;
+    justify-content: center;
+    margin: 10px auto;
+}
+
+.doctor-card-profile-image-container .doctor-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    border-radius: 50%;
+}
+
+.doctor-card-details {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.doctor-card-detail-name {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.doctor-card-detail-speciality {
+    margin-top: 5px;
+}
+
+.doctor-card-detail-experience {
+    color: #888;
+    margin-top: 8px;
+}
+
+.doctor-card-detail-consultationfees {
+    margin-top: 12px;
+}
+
+.bookedInfo {
+    text-align: left;
+    padding: 10px;
+}
+
+.bookedInfo button {
+    width: 100%;
+    padding: 12px;
+    background: #087bfa;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.cancel-appointment {
+    background: #087bfa;
+}
