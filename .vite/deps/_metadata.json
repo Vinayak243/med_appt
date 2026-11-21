@@ -1,0 +1,54 @@
+{
+  "hash": "bd1b2ec1",
+  "configHash": "33eb2e80",
+  "lockfileHash": "e6e24ffa",
+  "browserHash": "83109bb3",
+  "optimized": {
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "7b5f901c",
+      "needsInterop": true
+    },
+    "react-router-dom": {
+      "src": "../../node_modules/react-router-dom/dist/index.mjs",
+      "file": "react-router-dom.js",
+      "fileHash": "efca2ac5",
+      "needsInterop": false
+    },
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "f16f4015",
+      "needsInterop": true
+    },
+    "react/jsx-dev-runtime": {
+      "src": "../../node_modules/react/jsx-dev-runtime.js",
+      "file": "react_jsx-dev-runtime.js",
+      "fileHash": "c34402ce",
+      "needsInterop": true
+    },
+    "reactjs-popup": {
+      "src": "../../node_modules/reactjs-popup/dist/reactjs-popup.esm.js",
+      "file": "reactjs-popup.js",
+      "fileHash": "58f9cf06",
+      "needsInterop": false
+    },
+    "uuid": {
+      "src": "../../node_modules/uuid/dist/index.js",
+      "file": "uuid.js",
+      "fileHash": "a499e554",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "react-PYT6vkka": {
+      "file": "react-PYT6vkka.js",
+      "isDynamicEntry": false
+    },
+    "react-dom-ZMGL_rwe": {
+      "file": "react-dom-ZMGL_rwe.js",
+      "isDynamicEntry": false
+    }
+  }
+}
