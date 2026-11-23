@@ -1,0 +1,75 @@
+
+.notification-wrapper {
+    width: 100%;
+    min-height: 100vh;
+}
+
+
+.notification-wrapper {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.appointment-notification {
+    position: fixed;
+    top: 95px;
+    right: 25px;
+    width: 360px;
+    max-width: calc(100% - 40px);
+    padding: 20px;
+    background: #2196f3;
+    color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    z-index: 2000;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: transform 0.2s ease;
+}
+
+.appointment-notification:hover {
+    transform: translateY(-3px);
+}
+
+.appointment-notification h2 {
+    font-size: 23px;
+    margin-bottom: 15px;
+    color: #ffffff;
+}
+
+.appointment-notification p {
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 5px;
+    color: #ffffff;
+}
+
+.appointment-notification strong {
+    font-weight: 700;
+}
+
+.notification-hint {
+    margin-top: 12px;
+    font-size: 12px !important;
+    opacity: 0.85;
+}
+
+.appointment-extra-details {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.appointment-extra-details h3 {
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+@media (max-width: 600px) {
+    .appointment-notification {
+        top: 85px;
+        right: 12px;
+        width: calc(100% - 24px);
+        max-width: none;
+    }
+}

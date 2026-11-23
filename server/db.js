@@ -1,28 +1,25 @@
+
 const mongoose = require('mongoose');
-const mongoURI = "mongodb://root:mqnHBxkPwtk28jvt0VC5BuZA@172.21.230.17:27017/?authSource=admin";
 
-const connectToMongo = async (retryCount) => {
-    const MAX_RETRIES = 3;
-    const count = retryCount ?? 0;
-    try {
-        await mongoose.connect(mongoURI, { dbName: 'stayhealthybeta1'});
-        console.info('Connected to Mongo Successfully')
+const connectToMongo = async () => {
+  const host = process.env.MONGO_HOST;
+  const port = process.env.MONGO_PORT;
+  const username = process.env.MONGO_USERNAME || 'root';
+  const password = process.env.MONGO_PASSWORD;
 
-        return;
-    } catch (error) {
-        console.error(error);
+  if (!host || !port || !password) {
+    throw new Error('MongoDB environment variables are missing!');
+  }
 
-        const nextRetryCount = count + 1;
+  const mongoURI =
+  `mongodb://${encodeURIComponent(username)}:${encodeURIComponent(password)}@${host}:${port}/?authSource=admin`;
 
-        if (nextRetryCount >= MAX_RETRIES) {
-            throw new Error('Unable to connect to Mongo!');
-        }
+  await mongoose.connect(mongoURI, {
+    dbName: 'stayhealthybeta1',
+    serverSelectionTimeoutMS: 15000
+  });
 
-        console.info(`Retrying, retry count: ${nextRetryCount}`)
-
-        return await connectToMongo(nextRetryCount);
-
-    }
+  console.log('Connected to Mongo Successfully');
 };
 
 module.exports = connectToMongo;

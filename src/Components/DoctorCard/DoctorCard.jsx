@@ -6,6 +6,7 @@ import 'reactjs-popup/dist/index.css'
 import './DoctorCard.css'
 import AppointmentForm from '../AppointmentForm/AppointmentForm'
 
+
 const doctors = [
   {
     id: 1,
@@ -13,7 +14,7 @@ const doctors = [
     speciality: 'Dentist',
     experience: '9',
     rating: 5,
-    image: '/images/doctor1.png'
+    image: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop'
   },
   {
     id: 2,
@@ -21,7 +22,7 @@ const doctors = [
     speciality: 'Dentist',
     experience: '24',
     rating: 4,
-    image: '/images/doctor2.png'
+    image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop'
   },
   {
     id: 3,
@@ -29,9 +30,10 @@ const doctors = [
     speciality: 'Dentist',
     experience: '11',
     rating: 3,
-    image: ''
+    image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop'
   }
 ]
+
 
 const DoctorCardItem = ({ doctor }) => {
   const [appointments, setAppointments] = useState([])

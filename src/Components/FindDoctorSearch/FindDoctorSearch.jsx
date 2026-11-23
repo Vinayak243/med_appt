@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 import './FindDoctorSearch.css'
 import { useNavigate } from 'react-router-dom'
-r
+
 const initSpeciality = [
   'Dentist',
   'Gynecologist/obstetrician',

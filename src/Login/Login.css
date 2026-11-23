@@ -1,55 +1,152 @@
-/* Styles for the main container */
+
+/* Login page */
 .container {
-    max-width: 900px; /* Maximum width of the container */
-    margin: 0 auto; /* Center the container horizontally */
-    padding: 40px; /* Padding inside the container */
-    margin-top: 10%; /* Top margin of 10% */
+    width: 100%;
+    min-height: calc(100vh - 72px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 35px 20px;
+    box-sizing: border-box;
 }
 
-/* Styles for form groups */
+/* Main login card */
+.login-grid {
+    width: 100%;
+    max-width: 560px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 40px;
+    background: #ffffff;
+    border: 1px solid #dce7f3;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(32, 83, 140, 0.12);
+    box-sizing: border-box;
+}
+
+/* Heading */
+.login h1,
+.login-grid h1 {
+    color: #1769aa;
+    font-size: 30px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* Login text */
+.login-text {
+    text-align: center;
+    color: #64748b;
+    font-size: 14px;
+    margin: 8px 0 15px;
+}
+
+.login-text a {
+    color: #0878df;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.login-text a:hover {
+    text-decoration: underline;
+}
+
+/* Form */
+.login-form {
+    width: 100%;
+}
+
 .form-group {
-    margin-bottom: 20px; /* Bottom margin for spacing between form groups */
+    width: 100%;
+    margin-bottom: 18px;
 }
 
-/* Styles for form group labels */
 .form-group label {
-    display: block; /* Make labels display as block elements */
-    margin-bottom: 5px; /* Bottom margin for spacing below labels */
-    font-weight: bold; /* Bold text for labels */
+    display: block;
+    margin-bottom: 8px;
+    color: #24364b;
+    font-size: 14px;
+    font-weight: 600;
 }
 
-/* Styles for form controls */
+/* Input fields */
 .form-control {
-    width: 40%; /* Width of form controls */
-    padding: 8px; /* Padding inside form controls */
-    font-size: 16px; /* Font size of form controls */
-    border: 1px solid #ccc; /* Border around form controls */
-    border-radius: 4px; /* Border radius for rounded corners */
+    display: block;
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    color: #24364b;
+    font-size: 14px;
+    background: #f8fbff;
+    border: 1px solid #cbd9e8;
+    border-radius: 8px;
+    outline: none;
+    box-sizing: border-box;
 }
 
-/* Styles for button groups */
+.form-control:focus {
+    background: #ffffff;
+    border-color: #1682e8;
+    box-shadow: 0 0 0 3px rgba(22, 130, 232, 0.12);
+}
+
+/* Buttons */
 .btn-group {
-    margin-top: .0001px; /* Top margin for spacing above button groups */
-    margin-bottom: 20px; /* Bottom margin for spacing below button groups */
+    display: flex;
+    gap: 12px;
+    margin-top: 22px;
 }
 
-/* Styles for buttons */
 .btn {
-    padding: 10px 20px; /* Padding inside buttons */
-    font-size: 16px; /* Font size of buttons */
-    border: none; /* No border for buttons */
-    border-radius: 4px; /* Border radius for rounded corners on buttons */
-    cursor: pointer; /* Cursor style on hover for buttons */
+    padding: 13px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
-/* Styles for primary buttons */
 .btn-primary {
-    background-color: #007bff; /* Background color for primary buttons */
-    color: #fff; /* Text color for primary buttons */
+    flex: 1;
+    background: #0878df;
+    color: #ffffff;
 }
 
-/* Styles for danger (red) buttons */
+.btn-primary:hover {
+    background: #0564bd;
+}
+
 .btn-danger {
-    background-color: #dc3545; /* Background color for danger buttons */
-    color: #fff; /* Text color for danger buttons */
+    background: #edf2f7;
+    color: #475569;
+}
+
+.btn-danger:hover {
+    background: #dfe7f0;
+}
+
+/* Error message */
+.auth-message {
+    color: #dc3545;
+    background: #fff1f1;
+    padding: 10px;
+    border-radius: 7px;
+    margin-bottom: 15px;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px 12px;
+    }
+
+    .login-grid {
+        padding: 25px 20px;
+    }
+
+    .login-grid h1 {
+        font-size: 25px;
+    }
 }

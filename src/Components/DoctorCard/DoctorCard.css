@@ -192,3 +192,31 @@
 .cancel-appointment {
     background: #087bfa;
 }
+.doctor-image {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+  margin: 20px auto;
+}
+
+/* Hide scrollbar but keep scrolling enabled */
+.doctorbg {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.doctorbg::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar on popup content */
+.popup-content {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.popup-content::-webkit-scrollbar {
+    display: none;
+}
