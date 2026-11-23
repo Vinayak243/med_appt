@@ -7,7 +7,8 @@ import BookingConsultation from './Components/BookingConsultation/BookingConsult
 import InstantConsultation from './Components/InstantConsultationBooking/InstantConsultation';
 import SignUp from './Sign_Up/SignUp';
 import Login from './Login/Login';
-
+import ReviewForm from './Components/ReviewForm/ReviewForm';
+import MyAppointments from './Components/MyAppointments/MyAppointments';
 import './App.css';
 
 function Home() {
@@ -38,6 +39,9 @@ function Home() {
             src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=600"
             alt="Healthcare professional"
           />
+          <Link to="/reviews" className="floating-review-btn">
+  <span>★</span> Reviews
+</Link>
         </div>
       </section>
 
@@ -68,10 +72,7 @@ function Home() {
 function App() {
   return (
     <div className="App">
-
-      {/* Notification wrapper */}
       <Notification>
-
         {/* Navigation bar */}
         <nav className="main-navbar">
           <Link to="/" className="nav-logo">
@@ -79,19 +80,18 @@ function App() {
           </Link>
 
           <div className="nav-links">
-            <Link to="/">Home</Link>
-            <Link to="/doctors">Doctors</Link>
-            <Link to="/booking-consultation">Appointments</Link>
-            <Link to="/signup">Sign Up</Link>
-            <Link to="/login">Login</Link>
+  <Link to="/">Home</Link>
+  <Link to="/doctors">Doctors</Link>
+  <Link to="/booking-consultation">Appointments</Link>
+  
+  {/* <Link to="/my-appointments">My Appointments</Link> */}
+  <Link to="/signup">Sign Up</Link>
+  <Link to="/login">Login</Link>
 
-            <Link
-              to="/instant-consultation"
-              className="nav-book-btn"
-            >
-              Instant Consultation
-            </Link>
-          </div>
+  <Link to="/instant-consultation" className="nav-book-btn">
+    Instant Consultation
+  </Link>
+</div>
         </nav>
 
         {/* Application routes */}
@@ -99,7 +99,10 @@ function App() {
           <Route path="/" element={<Home />} />
 
           <Route path="/doctors" element={<DoctorCard />} />
-
+          <Route
+  path="/my-appointments"
+  element={<MyAppointments />}
+/>
           <Route
             path="/booking-consultation"
             element={<BookingConsultation />}
@@ -110,13 +113,13 @@ function App() {
             element={<InstantConsultation />}
           />
 
+          <Route path="/reviews" element={<ReviewForm />} />
+
           <Route path="/signup" element={<SignUp />} />
 
           <Route path="/login" element={<Login />} />
         </Routes>
-
       </Notification>
-
     </div>
   );
 }
