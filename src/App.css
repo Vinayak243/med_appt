@@ -4,6 +4,8 @@
     box-sizing: border-box;
   }
   
+
+
   .App {
     width: 100%;
     min-height: 100vh;
@@ -271,3 +273,131 @@
 }
 
   
+/* Profile dropdown */
+
+/* Profile Dropdown */
+.profile-dropdown {
+    position: relative;
+    display: inline-block;
+    z-index: 1001;
+}
+
+/* Welcome Button */
+.welcome-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 15px;
+    min-height: 48px;
+    background: #ffffff;
+    color: #263238;
+    border: 1px solid #dedede;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s ease;
+}
+
+.welcome-button:hover {
+    background: #f7f7f7;
+}
+
+/* User Icon */
+.user-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eeeeee;
+    color: #444444;
+    border-radius: 50%;
+    font-size: 19px;
+}
+
+/* Arrow */
+.dropdown-arrow {
+    font-size: 11px;
+    color: #666666;
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    width: 220px;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 11px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    padding: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    z-index: 2000;
+}
+
+/* Dropdown Options */
+.dropdown-menu button {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    width: 100%;
+    min-height: 47px;
+    padding: 12px 14px;
+    background: #ffffff;
+    color: #333333;
+    border: none;
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.dropdown-menu button:hover {
+    background: #f3f4f6;
+}
+
+/* Menu Icons */
+.dropdown-menu button span {
+    width: 22px;
+    color: #555555;
+    font-size: 18px;
+    text-align: center;
+}
+
+/* Logout */
+.dropdown-menu button.logout-button {
+    margin-top: 5px;
+    padding-top: 14px;
+    border-top: 1px solid #eeeeee;
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.dropdown-menu button.logout-button span {
+    color: #dc2626;
+}
+
+.dropdown-menu button.logout-button:hover {
+    background: #fff2f2;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .dropdown-menu {
+        right: 0;
+        width: 205px;
+    }
+
+    .welcome-button {
+        font-size: 14px;
+        padding: 9px 12px;
+    }
+}

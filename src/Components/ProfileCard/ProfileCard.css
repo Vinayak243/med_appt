@@ -1,0 +1,158 @@
+
+.patient-profile-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 2.5fr) minmax(220px, 0.9fr);
+    gap: 22px;
+    max-width: 1150px;
+    margin: 30px auto;
+    padding: 15px;
+    align-items: start;
+}
+
+.patient-profile-card,
+.patient-side-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+}
+
+.patient-profile-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.patient-profile-heading h2 {
+    margin: 0 0 6px;
+    color: #173b65;
+}
+
+.patient-profile-heading p,
+.patient-basic-info p {
+    color: #777;
+    margin: 0;
+}
+
+.patient-basic-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 22px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.patient-basic-info h3 {
+    margin: 0 0 6px;
+}
+
+.patient-fields-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.profile-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.profile-form-group label {
+    font-weight: 600;
+    color: #34445a;
+}
+
+.profile-form-group input,
+.profile-form-group select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px;
+    border: 1px solid #d7dfe8;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.profile-form-group input:disabled,
+.profile-form-group select:disabled {
+    background: #f6f8fa;
+    color: #555;
+}
+
+.patient-side-card {
+    text-align: left;
+    background: #f7fbff;
+}
+
+.side-card-icon {
+    font-size: 35px;
+    color: #087bfa;
+}
+
+.patient-side-card h3 {
+    color: #173b65;
+    margin-bottom: 10px;
+}
+
+.patient-side-card p {
+    color: #64748b;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.side-card-divider {
+    border-top: 1px solid #dce7f2;
+    margin: 20px 0;
+}
+
+.patient-side-card button {
+    width: 100%;
+    padding: 11px;
+    background: #087bfa;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.side-card-note {
+    background: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+}
+
+.profile-actions button {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.profile-save-btn {
+    background: #087bfa;
+    color: white;
+}
+
+.profile-cancel-btn {
+    background: #e9eef4;
+    color: #333;
+}
+
+@media (max-width: 750px) {
+    .patient-profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .patient-fields-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -5,16 +5,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 25px 20px;
+    padding: 20px;
     margin: 0 auto;
     box-sizing: border-box;
 }
 
 .signup {
     width: 100%;
-    max-width: 560px;
+    max-width: 550px;
     background: #ffffff;
-    padding: 30px 40px;
+    padding: 25px 35px;
     border-radius: 16px;
     box-shadow: 0 8px 30px rgba(32, 83, 140, 0.10);
     border: 1px solid #e8eef7;
@@ -23,33 +23,54 @@
 
 .signup h1 {
     color: #1769aa;
-    font-size: 28px;
+    font-size: 30px;
     text-align: center;
-    margin-bottom: 15px;
+    margin: 0 0 12px;
 }
 
 .signup-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .signup-text1 {
     text-align: center;
-    margin: 8px 0 15px;
+    margin: 5px 0 18px;
+    font-size: 17px;
+    color: #263b59;
+}
+
+.signup-text1 a {
+    color: #0878df;
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+.signup-text1 a:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }
 
 .form-group {
-    margin-bottom: 14px;
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 14px;
+    font-weight: 600;
 }
 
 .form-control {
     width: 100%;
-    height: 44px;
+    height: 48px;
     padding: 0 14px;
-    font-size: 14px;
+    font-size: 15px;
     background: #f8fbff;
-    border: 1px solid #d8e2ee;
+    border: 1px solid #cbd9e9;
     border-radius: 8px;
     box-sizing: border-box;
 }
@@ -63,21 +84,31 @@
 .btn-group {
     display: flex;
     gap: 12px;
-    margin-top: 20px;
+    margin-top: 16px;
 }
 
 .btn-primary {
     flex: 1;
     background: #0878df;
     color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-primary:hover {
+    background: #0568c5;
 }
 
 @media (max-width: 600px) {
     .container {
-        padding: 20px 12px;
+        padding: 15px 12px;
     }
 
     .signup {
-        padding: 25px 20px;
+        padding: 22px 18px;
     }
 }

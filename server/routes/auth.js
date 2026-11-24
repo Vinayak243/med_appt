@@ -1,232 +1,398 @@
+
 const express = require('express');
-const router =  express.Router();
+const router = express.Router();
+
 const bcrypt = require('bcryptjs');
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
-const session = require('express-session');
-const UserSchema = require('../models/User');
-const passport = require('passport');
-
-
 const dotenv = require('dotenv');
+
+const UserSchema = require('../models/User');
+
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET || 'thisiscodeformediclapplicationwhich isbuiltinreactappproject';
+const JWT_SECRET = process.env.JWT_SECRET;
 
-router.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        httpOnly: true,
-        secure: false,
-        maxAge: 1000 * 60 * 60 * 24,
-    },
-}));
+if (!JWT_SECRET) {
+    throw new Error('JWT_SECRET is missing from environment variables.');
+}
 
 
-router.use(passport.initialize());
-router.use(passport.session());
+// ==========================================
+// JWT AUTHENTICATION MIDDLEWARE
+// ==========================================
 
-passport.serializeUser(function (user, cb) {
-    cb(null, user.id);
-});
+const verifyToken = (req, res, next) => {
+    const authHeader = req.header('Authorization');
 
-passport.deserializeUser(function (id, cb) {
-    cb(null, id);
-});
-
-// Route 1: Registering A New User: POST: http://localhost:8181/api/auth/register. No Login Required
-router.post('/register',[
-    body('email', "Please Enter a Vaild Email").isEmail(),
-    body('name', "Username should be at least 4 characters.").isLength({ min: 4 }),
-    body('password', "Password Should Be At Least 8 Characters.").isLength({ min: 8 }),
-    body('phone', "Phone Number Should Be 10 Digits.").isLength({ min: 10 }),
-], async (req, res) => {
-
-    const error = validationResult(req);
-    if(!error.isEmpty()){
-        return res.status(400).json({error: error.array()});
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({
+            success: false,
+            error: 'Authentication token is required.'
+        });
     }
 
+    const token = authHeader.substring(7);
+
     try {
-        const checkMultipleUser1 = await UserSchema.findOne({ email : req.body.email });
-        if(checkMultipleUser1){
-            return res.status(403).json({ error: "A User with this email address already exists" });
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.user = decoded.user;
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            error: 'Invalid or expired authentication token.'
+        });
+    }
+};
+
+
+// ==========================================
+// VALIDATION ERROR HANDLER
+// ==========================================
+
+const checkValidation = (req, res, next) => {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({
+            success: false,
+            errors: errors.array()
+        });
+    }
+
+    next();
+};
+
+
+// ==========================================
+// ROUTE 1: REGISTER NEW PATIENT
+// POST /api/auth/register
+// ==========================================
+
+router.post(
+    '/register',
+    [
+        body('email')
+            .isEmail()
+            .withMessage('Please enter a valid email address.'),
+
+        body('name')
+            .trim()
+            .isLength({ min: 4 })
+            .withMessage('Name should be at least 4 characters.'),
+
+        body('password')
+            .isLength({ min: 8 })
+            .withMessage('Password should be at least 8 characters.'),
+
+        body('phone')
+            .matches(/^\d{10}$/)
+            .withMessage('Phone number must be exactly 10 digits.')
+    ],
+    checkValidation,
+    async (req, res) => {
+        try {
+            const email = req.body.email.trim().toLowerCase();
+
+            const existingUser = await UserSchema.findOne({ email });
+
+            if (existingUser) {
+                return res.status(409).json({
+                    success: false,
+                    error: 'A user with this email already exists.'
+                });
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashedPassword = await bcrypt.hash(
+                req.body.password,
+                salt
+            );
+
+            const newUser = await UserSchema.create({
+                email,
+                name: req.body.name.trim(),
+                password: hashedPassword,
+                phone: req.body.phone
+            });
+
+            const payload = {
+                user: {
+                    id: newUser.id
+                }
+            };
+
+            const authtoken = jwt.sign(
+                payload,
+                JWT_SECRET,
+                { expiresIn: '1d' }
+            );
+
+            return res.status(201).json({
+                success: true,
+                message: 'Registration successful.',
+                authtoken
+            });
+
+        } catch (error) {
+            console.error('Registration error:', error);
+
+            if (error.code === 11000) {
+                return res.status(409).json({
+                    success: false,
+                    error: 'Email already registered.'
+                });
+            }
+
+            return res.status(500).json({
+                success: false,
+                error: 'Unable to register user.'
+            });
+        }
+    }
+);
+
+
+// ==========================================
+// ROUTE 2: LOGIN PATIENT
+// POST /api/auth/login
+// ==========================================
+
+router.post(
+    '/login',
+    [
+        body('email')
+            .isEmail()
+            .withMessage('Please enter a valid email address.'),
+
+        body('password')
+            .notEmpty()
+            .withMessage('Password is required.')
+    ],
+    checkValidation,
+    async (req, res) => {
+        try {
+            const email = req.body.email.trim().toLowerCase();
+
+            const theUser = await UserSchema.findOne({ email });
+
+            if (!theUser) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'Invalid credentials.'
+                });
+            }
+
+            const checkHash = await bcrypt.compare(
+                req.body.password,
+                theUser.password
+            );
+
+            if (!checkHash) {
+                return res.status(401).json({
+                    success: false,
+                    error: 'Invalid credentials.'
+                });
+            }
+
+            const payload = {
+                user: {
+                    id: theUser.id
+                }
+            };
+
+            const authtoken = jwt.sign(
+                payload,
+                JWT_SECRET,
+                { expiresIn: '1d' }
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: 'Login successful.',
+                authtoken
+            });
+
+        } catch (error) {
+            console.error('Login error:', error);
+
+            return res.status(500).json({
+                success: false,
+                error: 'Unable to login.'
+            });
+        }
+    }
+);
+
+
+// ==========================================
+// ROUTE 3: GET LOGGED-IN PATIENT PROFILE
+// GET /api/auth/user
+// ==========================================
+
+router.get('/user', verifyToken, async (req, res) => {
+    try {
+        const user = await UserSchema.findById(req.user.id)
+            .select('-password')
+            .lean();
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                error: 'User not found.'
+            });
         }
 
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(req.body.password, salt);
-        
-        const newUser =  await UserSchema.create({
-            email: req.body.email,
-            name: req.body.name,
-            password: hash,
-            phone: req.body.phone,
-            createdAt: Date(),
+        return res.status(200).json({
+            success: true,
+            user
         });
 
-        const payload = {
-            user: {
-                id: newUser.id,
-            }
-        }
-        const authtoken = jwt.sign(payload, JWT_SECRET);
-        res.json({ authtoken });
-
     } catch (error) {
-        console.error(error);
-        return res.status(500).send("Internal Server Error");
-    }
+        console.error('Profile retrieval error:', error);
 
-});
-
-router.post('/login', [
-    body('email', "Please Enter a Vaild Email").isEmail(),
-], async (req, res) => {
-
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      
-        const theUser = await UserSchema.findOne({ email: req.body.email }); // <-- Change req.body.username to req.body.name
-            // console.log('my',theUser.name);
-        // req.session.name=theUser.name
-        req.session.email = req.body.email; // <-- Change req.body.username to req.body.name
-        console.log(req.session.email);
-        // console.log(req.session.name);
-        if (theUser) {
-            let checkHash = await bcrypt.compare(req.body.password, theUser.password);
-            if (checkHash) {
-                let payload = {
-                    user: {
-                        id: theUser.id
-                    }
-                }
-                const authtoken = jwt.sign(payload, JWT_SECRET);
-                return res.status(200).json({ authtoken });
-            } else {
-                return res.status(403).json({ error: "Invalid Credentials" });
-            }
-        } else {
-            return res.status(403).json({ error: "Invalid Credentials" });
-        }
-
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send("Internal Server Error");
+        return res.status(500).json({
+            success: false,
+            error: 'Unable to retrieve profile.'
+        });
     }
 });
 
 
-router.put('/update', [
-], async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
+// ==========================================
+// ROUTE 4: UPDATE PATIENT PROFILE
+// PUT /api/auth/user
+// ==========================================
 
-    try {
-        const { name } = req.body;
+router.put(
+    '/user',
+    verifyToken,
+    [
+        body('name')
+            .optional()
+            .trim()
+            .isLength({ min: 4 })
+            .withMessage('Name should be at least 4 characters.'),
 
-        const existingUser = await UserSchema.findOne({ username: name });
-        if (!existingUser) {
-            return res.status(404).json({ error: "User not found" });
-        }
+        body('phone')
+            .optional()
+            .matches(/^\d{10}$/)
+            .withMessage('Phone number must be exactly 10 digits.'),
 
-        existingUser.name = name;
-        existingUser.updatedAt = Date();
+        body('bloodGroup')
+            .optional({ values: 'falsy' })
+            .isIn(['A+', 'A-', 'B+', 'B-', 'O+', 'O-', 'AB+', 'AB-'])
+            .withMessage('Invalid blood group.'),
 
-        const updatedUser = await existingUser.save();
+        body('sex')
+            .optional({ values: 'falsy' })
+            .isIn(['Male', 'Female', 'Other'])
+            .withMessage('Invalid sex.'),
 
-        const payload = {
-            user: {
-                id: updatedUser.id,
-            },
-        };
+        body('dob')
+            .optional({ values: 'falsy' })
+            .isISO8601()
+            .withMessage('Invalid date of birth.'),
 
-        const authtoken = jwt.sign(payload, JWT_SECRET);
-        res.json({ authtoken });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).send("Internal Server Error");
-    }
-});
+        body('height')
+            .optional({ values: 'falsy' })
+            .isFloat({ min: 30, max: 250 })
+            .withMessage('Height must be between 30 and 250 cm.'),
 
-// Route 4: Fetch user data based on the email: GET: http://localhost:8181/api/auth/user
-router.get('/user', async (req, res) => {
-    try {
-      const email = req.headers.email; // Extract the email from the request headers
+        body('weight')
+            .optional({ values: 'falsy' })
+            .isFloat({ min: 1, max: 500 })
+            .withMessage('Weight must be between 1 and 500 kg.'),
 
-        if (!email) {
-            return res.status(400).json({ error: "Email not found in the request headers" });
-        }
-    
-        const user = await UserSchema.findOne({ email });
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-    
-        // Send only the necessary user details to the client
-        const userDetails = {
-            id: user.id,
-            name: user.name,
-            email: user.email,
-            phone: user.phone,
-            role: user.role,
-            createdAt: user.createdAt,
-            updatedAt: user.updatedAt,
-        };
-    
-        res.json(userDetails);
-        } catch (error) {
-        console.error(error);
-        return res.status(500).send("Internal Server Error");
-    }
-});
-router.put('/user', [
-    body('name', "Username should be at least 4 characters").isLength({ min: 4 }),
-    body('phone', "Phone number should be 10 digits").isLength({ min: 10 }),
-    ], async (req, res) => {
-        const errors = validationResult(req);
-        if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-        }
-    
+        body('emergencyContact')
+            .optional({ values: 'falsy' })
+            .matches(/^\d{10}$/)
+            .withMessage('Emergency contact must be exactly 10 digits.'),
+
+        body('address')
+            .optional({ values: 'falsy' })
+            .isString()
+            .isLength({ max: 500 })
+            .withMessage('Address cannot exceed 500 characters.')
+    ],
+    checkValidation,
+    async (req, res) => {
         try {
-        const email = req.headers.email; // Extract the email from the request headers
-    
-        if (!email) {
-            return res.status(400).json({ error: "Email not found in the request headers" });
-        }
-    
-        const existingUser = await UserSchema.findOne({ email });
-        if (!existingUser) {
-            return res.status(404).json({ error: "User not found" });
-        }
-    
-        existingUser.name = req.body.name;
-        existingUser.phone = req.body.phone;
-        existingUser.updatedAt = Date();
-    
-        const updatedUser = await existingUser.save();
-    
-        const payload = {
-            user: {
-            id: updatedUser.id,
-            },
-        };
-    
-        const authtoken = jwt.sign(payload, JWT_SECRET);
-        res.json({ authtoken });
+            const allowedFields = [
+                'name',
+                'phone',
+                'bloodGroup',
+                'sex',
+                'dob',
+                'height',
+                'weight',
+                'emergencyContact',
+                'address'
+            ];
+
+            const updateData = {};
+
+            allowedFields.forEach((field) => {
+                if (req.body[field] !== undefined) {
+                    updateData[field] =
+                        typeof req.body[field] === 'string'
+                            ? req.body[field].trim()
+                            : req.body[field];
+                }
+            });
+
+            if (Object.keys(updateData).length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'No profile information provided.'
+                });
+            }
+
+            const updatedUser = await UserSchema.findByIdAndUpdate(
+                req.user.id,
+                { $set: updateData },
+                {
+                    new: true,
+                    runValidators: true
+                }
+            ).select('-password');
+
+            if (!updatedUser) {
+                return res.status(404).json({
+                    success: false,
+                    error: 'User not found.'
+                });
+            }
+
+            console.log('Profile saved for user:', updatedUser._id);
+
+            console.log('Saved patient details:', {
+                bloodGroup: updatedUser.bloodGroup,
+                sex: updatedUser.sex,
+                dob: updatedUser.dob,
+                height: updatedUser.height,
+                weight: updatedUser.weight,
+                emergencyContact: updatedUser.emergencyContact,
+                address: updatedUser.address
+            });
+
+            return res.status(200).json({
+                success: true,
+                message: 'Profile updated successfully.',
+                user: updatedUser
+            });
+
         } catch (error) {
-        console.error(error);
-        return res.status(500).send("Internal Server Error");
+            console.error('Profile update error:', error);
+
+            return res.status(500).json({
+                success: false,
+                error: 'Unable to update profile.'
+            });
         }
-});
+    }
+);
 
 
 module.exports = router;

@@ -15,16 +15,28 @@ const Login = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Handle input changes
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+
+        setFormData((previous) => ({
+            ...previous,
+            [name]: value
+        }));
     };
 
+    // Handle login
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
+
+        const email = formData.email.trim().toLowerCase();
+
+        if (!email || !formData.password) {
+            setMessage('Please enter your email and password.');
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -33,29 +45,60 @@ const Login = () => {
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(formData)
+                body: JSON.stringify({
+                    email: email,
+                    password: formData.password
+                })
             });
 
             const data = await response.json();
 
             if (!response.ok) {
-                throw new Error(data.error || 'Login failed. Check your credentials.');
+                throw new Error(
+                    data.error ||
+                    data.message ||
+                    'Login failed. Check your credentials.'
+                );
             }
 
-            sessionStorage.setItem('auth-token', data.authtoken);
-            sessionStorage.setItem('email', formData.email);
+            if (!data.authtoken) {
+                throw new Error(
+                    'Authentication token was not received.'
+                );
+            }
 
-            navigate('/');
+            // Store authentication details
+            sessionStorage.setItem('auth-token', data.authtoken);
+            sessionStorage.setItem('email', email);
+
+            setMessage('Login successful!');
+
+            // Navigate to home page
+            navigate('/', { replace: true });
 
         } catch (error) {
-            setMessage(error.message);
+            console.error('Login error:', error);
+            setMessage(
+                error.message || 'Unable to login. Please try again.'
+            );
         } finally {
             setLoading(false);
         }
     };
 
+    // Reset form
+    const handleReset = () => {
+        setFormData({
+            email: '',
+            password: ''
+        });
+
+        setMessage('');
+    };
+
     return (
         <div className="container">
+
             <div className="login-grid">
 
                 <div className="login-text">
@@ -64,45 +107,56 @@ const Login = () => {
 
                 <div className="login-text">
                     Are you a new member?
+
                     <span>
                         <Link to="/signup"> Sign Up Here</Link>
                     </span>
                 </div>
 
                 <div className="login-form">
+
                     <form onSubmit={handleSubmit}>
 
                         <div className="form-group">
-                            <label>Email</label>
+                            <label htmlFor="email">Email</label>
+
                             <input
+                                id="email"
                                 type="email"
                                 name="email"
                                 className="form-control"
                                 placeholder="Enter your email"
                                 value={formData.email}
                                 onChange={handleChange}
+                                autoComplete="email"
                                 required
                             />
                         </div>
 
                         <div className="form-group">
-                            <label>Password</label>
+                            <label htmlFor="password">Password</label>
+
                             <input
+                                id="password"
                                 type="password"
                                 name="password"
                                 className="form-control"
                                 placeholder="Enter your password"
                                 value={formData.password}
                                 onChange={handleChange}
+                                autoComplete="current-password"
                                 required
                             />
                         </div>
 
                         {message && (
-                            <p className="auth-message">{message}</p>
+                            <p className="auth-message" role="alert">
+                                {message}
+                            </p>
                         )}
 
                         <div className="btn-group">
+
                             <button
                                 type="submit"
                                 className="btn btn-primary"
@@ -112,20 +166,22 @@ const Login = () => {
                             </button>
 
                             <button
-                                type="reset"
+                                type="button"
                                 className="btn btn-danger"
-                                onClick={() => setFormData({
-                                    email: '',
-                                    password: ''
-                                })}
+                                onClick={handleReset}
+                                disabled={loading}
                             >
                                 Reset
                             </button>
+
                         </div>
 
                     </form>
+
                 </div>
+
             </div>
+
         </div>
     );
 };
