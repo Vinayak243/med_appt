@@ -8,6 +8,7 @@ const SignUp = () => {
     const navigate = useNavigate();
 
     const initialFormData = {
+        role: 'Patient',
         name: '',
         phone: '',
         email: '',
@@ -39,6 +40,11 @@ const SignUp = () => {
         const name = formData.name.trim();
         const phone = formData.phone.trim();
         const email = formData.email.trim();
+
+        if (!formData.role) {
+            setMessage('Please select a role.');
+            return;
+        }
 
         if (name.length < 4) {
             setMessage('Name must contain at least 4 characters.');
@@ -86,8 +92,6 @@ const SignUp = () => {
                 throw new Error(errorMessage);
             }
 
-            // Do not create a login session during registration.
-            // Clear any previous authentication session.
             sessionStorage.removeItem('auth-token');
             sessionStorage.removeItem('email');
 
@@ -127,6 +131,22 @@ const SignUp = () => {
 
                     <div className="signup-form">
                         <form onSubmit={handleSubmit}>
+
+                            {/* Role Field */}
+                            <div className="form-group">
+                                <label htmlFor="role">Role</label>
+                                <select
+                                    id="role"
+                                    name="role"
+                                    className="form-control"
+                                    value={formData.role}
+                                    onChange={handleChange}
+                                    required
+                                >
+                                    <option value="Patient">Patient</option>
+                                    <option value="Doctor">Doctor</option>
+                                </select>
+                            </div>
 
                             <div className="form-group">
                                 <label htmlFor="name">Name</label>
