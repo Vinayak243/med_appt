@@ -13,7 +13,7 @@ import Notification from './Components/Notification/Notification';
 import DoctorCard from './Components/DoctorCard/DoctorCard';
 import BookingConsultation from './Components/BookingConsultation/BookingConsultation';
 import InstantConsultation from './Components/InstantConsultationBooking/InstantConsultation';
-import SignUp from './Sign_Up/SignUp';
+import SignUp from './Sign_Up/Sign_Up';
 import Login from './Login/Login';
 import ReviewForm from './Components/ReviewForm/ReviewForm';
 import MyAppointments from './Components/MyAppointments/MyAppointments';

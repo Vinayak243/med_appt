@@ -1,10 +1,38 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Navbar.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    Boolean(sessionStorage.getItem('auth-token'))
+  );
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = () => {
+      setIsLoggedIn(
+        Boolean(sessionStorage.getItem('auth-token'))
+      );
+    };
+
+    checkAuth();
+
+    // Listen for login/logout events
+    window.addEventListener('userLoggedIn', checkAuth);
+    window.addEventListener('userLoggedOut', checkAuth);
+    window.addEventListener('storage', checkAuth);
+
+    return () => {
+      window.removeEventListener('userLoggedIn', checkAuth);
+      window.removeEventListener('userLoggedOut', checkAuth);
+      window.removeEventListener('storage', checkAuth);
+    };
+  }, [location.pathname]);
 
   const handleClick = () => {
     setMenuOpen(!menuOpen);
@@ -12,6 +40,19 @@ const Navbar = () => {
 
   const closeMenu = () => {
     setMenuOpen(false);
+  };
+
+  // Logout functionality
+  const handleLogout = () => {
+    sessionStorage.removeItem('auth-token');
+    sessionStorage.removeItem('email');
+
+    setIsLoggedIn(false);
+    setMenuOpen(false);
+
+    window.dispatchEvent(new Event('userLoggedOut'));
+
+    navigate('/login', { replace: true });
   };
 
   return (
@@ -57,17 +98,35 @@ const Navbar = () => {
           </Link>
         </li>
 
-        <li className="link">
-          <Link to="/signup" onClick={closeMenu}>
-            <button type="button" className="btn1">Sign Up</button>
-          </Link>
-        </li>
+        {!isLoggedIn ? (
+          <>
+            <li className="link">
+              <Link to="/signup" onClick={closeMenu}>
+                <button type="button" className="btn1">
+                  Sign Up
+                </button>
+              </Link>
+            </li>
 
-        <li className="link">
-          <Link to="/login" onClick={closeMenu}>
-            <button type="button" className="btn1">Login</button>
-          </Link>
-        </li>
+            <li className="link">
+              <Link to="/login" onClick={closeMenu}>
+                <button type="button" className="btn1">
+                  Login
+                </button>
+              </Link>
+            </li>
+          </>
+        ) : (
+          <li className="link">
+            <button
+              type="button"
+              className="btn1"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+          </li>
+        )}
 
       </ul>
     </nav>

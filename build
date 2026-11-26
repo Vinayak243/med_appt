@@ -1,0 +1,14 @@
+
+> med_appt@0.0.0 build
+> vite build && rm -rf server/build && mv dist server/build
+
+vite v8.3.8 building client environment for production...
+transforming...
+✓ 76 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                   1.29 kB │ gzip:  0.62 kB
+dist/assets/index-C3GtPFjY.css   30.90 kB │ gzip:  6.29 kB
+dist/assets/index-Do229Kmn.js   315.97 kB │ gzip: 95.78 kB
+
+✓ built in 300ms
