@@ -212,12 +212,12 @@ function App() {
               Doctors
             </Link>
 
-            <Link
+            {/* <Link
               to="/booking-consultation"
               onClick={() => setDropdownOpen(false)}
             >
               Appointments
-            </Link>
+            </Link> */}
 
 
             {user && (

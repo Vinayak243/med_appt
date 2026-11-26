@@ -18,7 +18,6 @@ const SignUp = () => {
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Handle input changes
     const handleChange = (e) => {
         const { name, value } = e.target;
 
@@ -28,13 +27,11 @@ const SignUp = () => {
         }));
     };
 
-    // Reset form
     const handleReset = () => {
         setFormData(initialFormData);
         setMessage('');
     };
 
-    // Handle registration
     const handleSubmit = async (e) => {
         e.preventDefault();
         setMessage('');
@@ -89,15 +86,17 @@ const SignUp = () => {
                 throw new Error(errorMessage);
             }
 
-            // Store token only if the backend returns one
-            if (data.authtoken) {
-                sessionStorage.setItem('auth-token', data.authtoken);
-                sessionStorage.setItem('email', email);
-            }
+            // Do not create a login session during registration.
+            // Clear any previous authentication session.
+            sessionStorage.removeItem('auth-token');
+            sessionStorage.removeItem('email');
+
+            window.dispatchEvent(new Event('userLoggedOut'));
 
             setMessage('Registration successful! Please log in.');
 
-            // Navigate to login
+            setFormData(initialFormData);
+
             navigate('/login', {
                 replace: true
             });
@@ -112,9 +111,7 @@ const SignUp = () => {
 
     return (
         <div className="container">
-
             <div className="signup">
-
                 <div className="signup-grid">
 
                     <div className="signup-text">
@@ -123,20 +120,16 @@ const SignUp = () => {
 
                     <div className="signup-text1">
                         Already a member?
-
                         <span>
                             <Link to="/login"> Login</Link>
                         </span>
                     </div>
 
                     <div className="signup-form">
-
                         <form onSubmit={handleSubmit}>
 
-                            {/* NAME */}
                             <div className="form-group">
                                 <label htmlFor="name">Name</label>
-
                                 <input
                                     id="name"
                                     type="text"
@@ -150,10 +143,8 @@ const SignUp = () => {
                                 />
                             </div>
 
-                            {/* PHONE */}
                             <div className="form-group">
                                 <label htmlFor="phone">Phone</label>
-
                                 <input
                                     id="phone"
                                     type="tel"
@@ -168,10 +159,8 @@ const SignUp = () => {
                                 />
                             </div>
 
-                            {/* EMAIL */}
                             <div className="form-group">
                                 <label htmlFor="email">Email</label>
-
                                 <input
                                     id="email"
                                     type="email"
@@ -184,10 +173,8 @@ const SignUp = () => {
                                 />
                             </div>
 
-                            {/* PASSWORD */}
                             <div className="form-group">
                                 <label htmlFor="password">Password</label>
-
                                 <input
                                     id="password"
                                     type="password"
@@ -202,19 +189,13 @@ const SignUp = () => {
                                 />
                             </div>
 
-                            {/* MESSAGE */}
                             {message && (
-                                <p
-                                    className="auth-message"
-                                    role="alert"
-                                >
+                                <p className="auth-message" role="alert">
                                     {message}
                                 </p>
                             )}
 
-                            {/* BUTTONS */}
                             <div className="btn-group">
-
                                 <button
                                     type="submit"
                                     className="btn btn-primary"
@@ -231,17 +212,12 @@ const SignUp = () => {
                                 >
                                     Reset
                                 </button>
-
                             </div>
 
                         </form>
-
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     );
 };

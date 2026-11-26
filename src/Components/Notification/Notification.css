@@ -4,93 +4,154 @@
     min-height: 100vh;
 }
 
-.appointment-notification {
+.notification-container {
     position: fixed;
-    top: 110px;
+    top: 18px;
     right: 25px;
-    width: 320px;
-    max-width: calc(100% - 30px);
-    padding: 20px;
-    background: #ffffff;
-    color: #263b59;
-    border: 1px solid #dce8f5;
-    border-left: 5px solid #0878df;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    z-index: 1000;
-    box-sizing: border-box;
+    z-index: 2000;
 }
 
-.notification-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    margin-bottom: 12px;
-}
-
-.notification-heading h2 {
-    font-size: 19px;
-    color: #1769aa;
-    margin: 0;
-}
-
-.notification-toggle {
-    background: #eaf3ff;
-    color: #0878df;
+.notification-bell {
+    position: relative;
+    width: 43px;
+    height: 43px;
     border: none;
-    border-radius: 6px;
-    width: 30px;
-    height: 30px;
-    font-size: 21px;
+    border-radius: 50%;
+    background: #eef5ff;
     cursor: pointer;
+    font-size: 21px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.appointment-notification p {
+.notification-bell:hover {
+    background: #dceaff;
+}
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 19px;
+    height: 19px;
+    padding: 0 4px;
+    background: #e53935;
+    color: white;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notification-dropdown {
+    position: absolute;
+    top: 53px;
+    right: 0;
+    width: 360px;
+    max-width: calc(100vw - 30px);
+    background: white;
+    border: 1px solid #dce8f5;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+}
+
+.notification-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: #f3f7ff;
+    border-bottom: 1px solid #dce8f5;
+}
+
+.notification-title h3 {
+    margin: 0;
+    color: #1769aa;
+    font-size: 18px;
+}
+
+.notification-title button {
+    border: none;
+    background: transparent;
+    font-size: 25px;
+    cursor: pointer;
+    color: #555;
+}
+
+.no-notifications {
+    padding: 30px 15px;
+    text-align: center;
+    color: #64748b;
+}
+
+.no-notifications span {
+    font-size: 30px;
+}
+
+.no-notifications p {
+    font-weight: 600;
+}
+
+.no-notifications small {
+    font-size: 12px;
+}
+
+.notification-list {
+    max-height: 430px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    gap: 12px;
+    padding: 15px;
+    border-bottom: 1px solid #edf1f6;
+}
+
+.notification-item-icon {
+    font-size: 23px;
+}
+
+.notification-item-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.notification-item-content strong {
+    color: #1769aa;
     font-size: 14px;
-    line-height: 1.5;
-    margin: 8px 0;
+}
+
+.notification-item-content p {
+    margin: 6px 0;
+    font-size: 13px;
     color: #42536a;
     overflow-wrap: anywhere;
 }
 
-.appointment-notification strong {
-    color: #203c5c;
-}
-
-.appointment-extra-details {
-    margin-top: 12px;
-    padding-top: 12px;
-    border-top: 1px solid #dce8f5;
-}
-
-.appointment-extra-details h3 {
+.booking-status {
+    display: inline-block;
+    margin-top: 5px;
+    padding: 4px 9px;
+    background: #e6f7ed;
     color: #16834a;
-    font-size: 16px;
-    margin-bottom: 6px;
-}
-
-.notification-close {
-    display: block;
-    margin-top: 14px;
-    padding: 8px 15px;
-    background: #0878df;
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
+    border-radius: 20px;
+    font-size: 11px;
     font-weight: 600;
 }
 
-.notification-close:hover {
-    background: #0568c5;
-}
+@media (max-width: 768px) {
+    .notification-container {
+        top: 15px;
+        right: 75px;
+    }
 
-@media (max-width: 600px) {
-    .appointment-notification {
-        top: 90px;
-        right: 12px;
-        width: calc(100% - 24px);
-        max-width: none;
+    .notification-dropdown {
+        right: -55px;
+        width: 320px;
     }
 }

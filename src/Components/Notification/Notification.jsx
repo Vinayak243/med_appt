@@ -3,150 +3,203 @@ import React, { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './Notification.css';
 
+const STORAGE_KEY = 'appointments';
+
+// Remove duplicate appointment records
+const getAppointments = (email) => {
+    try {
+        const storedAppointments = JSON.parse(
+            localStorage.getItem(STORAGE_KEY) || '[]'
+        );
+
+        const userAppointments = storedAppointments.filter(
+            appointment =>
+                appointment.status !== 'Cancelled' &&
+                appointment.bookedBy === email
+        );
+
+        const uniqueAppointments = new Map();
+
+        userAppointments.forEach(appointment => {
+            const uniqueKey = [
+                appointment.bookedBy,
+                appointment.doctorName,
+                appointment.appointmentDate,
+                appointment.timeSlot,
+                appointment.bookingType || 'regular'
+            ].join('|').toLowerCase();
+
+            if (!uniqueAppointments.has(uniqueKey)) {
+                uniqueAppointments.set(uniqueKey, appointment);
+            }
+        });
+
+        return Array.from(uniqueAppointments.values());
+
+    } catch (error) {
+        console.error('Unable to load appointments:', error);
+        return [];
+    }
+};
+
 const Notification = ({ children }) => {
     const location = useLocation();
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [appointmentData, setAppointmentData] = useState(null);
-    const [showNotification, setShowNotification] = useState(false);
-    const [showDetails, setShowDetails] = useState(false);
+    const [email, setEmail] = useState(
+        sessionStorage.getItem('email')
+    );
 
-    // Load appointment details
-    const loadAppointment = () => {
-        try {
-            const storedUsername = sessionStorage.getItem('email');
+    const [appointments, setAppointments] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
 
-            const storedDoctorData = JSON.parse(
-                localStorage.getItem('doctorData') || 'null'
-            );
+    const loggedIn = !!(
+        sessionStorage.getItem('auth-token') && email
+    );
 
-            const storedAppointmentData = storedDoctorData?.name
-                ? JSON.parse(
-                    localStorage.getItem(storedDoctorData.name) || 'null'
-                )
-                : null;
+    const loadNotifications = () => {
+        const currentEmail = sessionStorage.getItem('email');
+        setEmail(currentEmail);
 
-            setIsLoggedIn(!!storedUsername);
-            setAppointmentData(storedAppointmentData);
-
-            setShowNotification(
-                !!storedUsername && !!storedAppointmentData
-            );
-
-        } catch (error) {
-            console.error('Notification loading error:', error);
-            setAppointmentData(null);
-            setShowNotification(false);
+        if (
+            !currentEmail ||
+            !sessionStorage.getItem('auth-token')
+        ) {
+            setAppointments([]);
+            setIsOpen(false);
+            return;
         }
+
+        setAppointments(getAppointments(currentEmail));
     };
 
     useEffect(() => {
-        loadAppointment();
+        loadNotifications();
 
-        const handleBooking = () => {
-            loadAppointment();
-            setShowDetails(false);
+        const handleUpdate = () => {
+            loadNotifications();
         };
 
-        const handleCancellation = () => {
-            setAppointmentData(null);
-            setShowNotification(false);
-            setShowDetails(false);
-        };
+        const events = [
+            'appointmentsUpdated',
+            'appointmentBooked',
+            'appointmentCancelled',
+            'storage',
+            'userLoggedIn',
+            'userLoggedOut'
+        ];
 
-        window.addEventListener('appointmentBooked', handleBooking);
-        window.addEventListener('appointmentCancelled', handleCancellation);
+        events.forEach(event =>
+            window.addEventListener(event, handleUpdate)
+        );
 
         return () => {
-            window.removeEventListener('appointmentBooked', handleBooking);
-            window.removeEventListener('appointmentCancelled', handleCancellation);
+            events.forEach(event =>
+                window.removeEventListener(event, handleUpdate)
+            );
         };
     }, []);
 
-    // Reload notification when navigating between pages
     useEffect(() => {
-        if (location.pathname === '/') {
-            loadAppointment();
-        }
+        loadNotifications();
+        setIsOpen(false);
     }, [location.pathname]);
-
-    // Show appointment panel only on Home page
-    const shouldShowNotification =
-    location.pathname === '/profile' &&
-    isLoggedIn &&
-    showNotification &&
-    appointmentData;
 
     return (
         <div className="notification-wrapper">
 
             {children}
 
-            {shouldShowNotification && (
-
-                <div className="appointment-notification">
-
-                    <div
-                        className="notification-heading"
-                        onClick={() => setShowDetails(!showDetails)}
-                    >
-                        <h2>Appointment Details</h2>
-
-                        <button
-                            type="button"
-                            className="notification-toggle"
-                            aria-label="Toggle appointment details"
-                        >
-                            {showDetails ? '−' : '+'}
-                        </button>
-                    </div>
-
-                    <p>
-                        <strong>Doctor:</strong>{' '}
-                        {appointmentData.doctorName}
-                    </p>
-
-                    <p>
-                        <strong>Speciality:</strong>{' '}
-                        {appointmentData.doctorSpeciality}
-                    </p>
-
-                    <p>
-                        <strong>Name:</strong>{' '}
-                        {appointmentData.name}
-                    </p>
-
-                    <p>
-                        <strong>Phone Number:</strong>{' '}
-                        {appointmentData.phoneNumber}
-                    </p>
-
-                    <p>
-                        <strong>Date:</strong>{' '}
-                        {appointmentData.appointmentDate}
-                    </p>
-
-                    <p>
-                        <strong>Time:</strong>{' '}
-                        {appointmentData.timeSlot}
-                    </p>
-
-                    {showDetails && (
-                        <div className="appointment-extra-details">
-                            <h3>Booking Confirmed!</h3>
-                            <p>
-                                Your appointment has been successfully booked.
-                            </p>
-                        </div>
-                    )}
+            {loggedIn && (
+                <div className="notification-container">
 
                     <button
                         type="button"
-                        className="notification-close"
-                        onClick={() => setShowNotification(false)}
+                        className="notification-bell"
+                        onClick={() => setIsOpen(!isOpen)}
+                        aria-label="View notifications"
+                        aria-expanded={isOpen}
                     >
-                        Close
+                        <span className="bell-icon">🔔</span>
+
+                        {appointments.length > 0 && (
+                            <span className="notification-count">
+                                {appointments.length > 99
+                                    ? '99+'
+                                    : appointments.length}
+                            </span>
+                        )}
                     </button>
+
+                    {isOpen && (
+                        <div className="notification-dropdown">
+
+                            <div className="notification-title">
+                                <h3>Notifications</h3>
+
+                                <button
+                                    type="button"
+                                    onClick={() => setIsOpen(false)}
+                                    aria-label="Close notifications"
+                                >
+                                    ×
+                                </button>
+                            </div>
+
+                            {appointments.length === 0 ? (
+                                <div className="no-notifications">
+                                    <span>🔔</span>
+                                    <p>No appointment notifications yet.</p>
+                                    <small>
+                                        Book an appointment to receive notifications.
+                                    </small>
+                                </div>
+                            ) : (
+                                <div className="notification-list">
+
+                                    {appointments.map(appointment => (
+                                        <div
+                                            className="notification-item"
+                                            key={appointment.id}
+                                        >
+                                            <div className="notification-item-icon">
+                                                <span>📅</span>
+                                            </div>
+
+                                            <div className="notification-item-content">
+
+                                                <strong>
+                                                    Appointment booked successfully!
+                                                </strong>
+
+                                                <p>
+                                                    Doctor: {appointment.doctorName || 'Doctor'}
+                                                </p>
+
+                                                <p>
+                                                    Speciality: {appointment.doctorSpeciality || 'Not specified'}
+                                                </p>
+
+                                                <p>
+                                                    Date: {appointment.appointmentDate || 'Not specified'}
+                                                </p>
+
+                                                <p>
+                                                    Time: {appointment.timeSlot || 'Not specified'}
+                                                </p>
+
+                                                <span className="booking-status">
+                                                    {appointment.status || 'Confirmed'}
+                                                </span>
+
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                </div>
+                            )}
+
+                        </div>
+                    )}
 
                 </div>
             )}

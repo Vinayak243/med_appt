@@ -1,77 +1,225 @@
 
 .reports-container {
-  max-width: 1000px;
-  margin: 40px auto;
-  padding: 25px;
-}
-
-.reports-container h2 {
-  color: #1e3a5f;
-  margin-bottom: 10px;
-}
-
-.reports-container p {
-  color: #666;
-}
-
-.report-card {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-top: 30px;
-  padding: 25px;
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.06);
-}
-
-.report-icon {
-  font-size: 35px;
-}
-
-.report-details {
-  flex: 1;
-}
-
-.report-details h3 {
-  color: #263b53;
-  margin-bottom: 8px;
-}
-
-.report-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.view-report-btn,
-.download-report-btn {
-  padding: 11px 18px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 600;
-  color: white;
-}
-
-.view-report-btn {
-  background: #2563eb;
-}
-
-.download-report-btn {
-  background: #16a34a;
-}
-
-.view-report-btn:hover,
-.download-report-btn:hover {
-  opacity: 0.85;
-}
-
-@media (max-width: 600px) {
-  .report-card {
-    flex-direction: column;
-    align-items: flex-start;
+    width: 100%;
+    max-width: 1150px;
+    margin: 0 auto;
+    padding: 55px 25px;
+    min-height: 80vh;
+    box-sizing: border-box;
   }
-}
+  
+  .reports-container > h2 {
+    font-size: 26px;
+    color: #174a7e;
+    margin: 0 0 8px;
+  }
+  
+  .reports-container > p {
+    font-size: 15px;
+    color: #52657d;
+    margin: 0 0 25px;
+  }
+  
+  .report-card {
+    width: 100%;
+    min-height: 100px;
+    background: #ffffff;
+    border: 1px solid #d8e5f5;
+    border-radius: 12px;
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 5px 18px rgba(20, 60, 100, 0.06);
+    box-sizing: border-box;
+  }
+  
+  .report-icon {
+    width: 55px;
+    height: 55px;
+    background: #e8f2ff;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 27px;
+    flex-shrink: 0;
+  }
+  
+  .report-details {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .report-details h3 {
+    color: #174a7e;
+    font-size: 18px;
+    margin: 0 0 7px;
+  }
+  
+  .report-details p {
+    color: #65758b;
+    font-size: 14px;
+    margin: 0;
+  }
+  
+  .report-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  
+  .view-report-btn,
+  .download-report-btn {
+    background: #087bff;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 7px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .view-report-btn:hover,
+  .download-report-btn:hover {
+    background: #0566d6;
+  }
+  
+  .report-error {
+    background: #fff1f0;
+    color: #c0392b;
+    padding: 12px 16px;
+    border-radius: 7px;
+    margin-bottom: 15px;
+  }
+  
+  .patient-report-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    padding: 20px;
+  }
+  
+  .patient-report-modal {
+    width: 100%;
+    max-width: 780px;
+    max-height: 90vh;
+    overflow-y: auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.2);
+  }
+  
+  .report-modal-header {
+    background: #087bff;
+    color: white;
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .report-modal-header h2 {
+    color: white;
+    margin: 0 0 5px;
+    font-size: 23px;
+  }
+  
+  .report-modal-header p {
+    color: white;
+    margin: 0;
+    font-size: 14px;
+  }
+  
+  .close-report-btn {
+    border: none;
+    background: transparent;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+  }
+  
+  .patient-report-content {
+    padding: 25px;
+  }
+  
+  .patient-report-content h3 {
+    color: #173b65;
+    font-size: 19px;
+    margin: 0 0 22px;
+  }
+  
+  .patient-report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px 30px;
+  }
+  
+  .patient-report-grid label {
+    display: block;
+    color: #68788f;
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  
+  .patient-report-grid p {
+    color: #173b65;
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  
+  .report-note {
+    color: #68788f;
+    font-size: 12px;
+    margin-top: 25px;
+  }
+  
+  .report-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 20px 25px;
+    border-top: 1px solid #e5eaf0;
+  }
+  
+  .cancel-report-btn {
+    background: #edf1f5;
+    color: #344054;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-weight: 600;
+  }
+  
+  @media (max-width: 700px) {
+    .reports-container {
+      padding: 30px 15px;
+    }
+  
+    .report-card {
+      flex-wrap: wrap;
+    }
+  
+    .report-details {
+      flex: 1 1 60%;
+    }
+  
+    .report-actions {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+  
+    .patient-report-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  

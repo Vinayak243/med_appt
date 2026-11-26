@@ -37,24 +37,53 @@ const doctors = [
 
 const getAppointments = () => {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    return JSON.parse(
+      localStorage.getItem(STORAGE_KEY) || '[]'
+    );
   } catch {
     return [];
   }
 };
 
 const DoctorCardItem = ({ doctor }) => {
+  const currentEmail = sessionStorage.getItem('email');
+
   const [appointments, setAppointments] = useState(() =>
     getAppointments().filter(
       appointment =>
         appointment.doctorName === doctor.name &&
-        appointment.status !== 'Cancelled'
+        appointment.status !== 'Cancelled' &&
+        appointment.bookingType !== 'instant' &&
+        appointment.bookedBy === currentEmail
     )
   );
 
   const [showModal, setShowModal] = useState(false);
 
+  // Refresh appointments for the current user
+  const refreshAppointments = () => {
+    const email = sessionStorage.getItem('email');
+
+    const updated = getAppointments().filter(
+      appointment =>
+        appointment.doctorName === doctor.name &&
+        appointment.status !== 'Cancelled' &&
+        appointment.bookingType !== 'instant' &&
+        appointment.bookedBy === email
+    );
+
+    setAppointments(updated);
+  };
+
+  // Book appointment
   const handleFormSubmit = (details) => {
+    const email = sessionStorage.getItem('email');
+
+    if (!email) {
+      alert('Please log in before booking an appointment.');
+      return;
+    }
+
     const appointment = {
       id: Date.now(),
       name: details.name,
@@ -64,6 +93,11 @@ const DoctorCardItem = ({ doctor }) => {
       doctorName: doctor.name,
       doctorSpeciality: doctor.speciality,
       doctorImage: doctor.image,
+
+      // Notification details
+      bookedBy: email,
+      bookingType: 'regular',
+
       status: 'Upcoming',
       reviewGiven: false
     };
@@ -97,13 +131,19 @@ const DoctorCardItem = ({ doctor }) => {
       JSON.stringify(appointment)
     );
 
-    setAppointments(previous => [...previous, appointment]);
+    setAppointments(previous => [
+      ...previous,
+      appointment
+    ]);
+
     setShowModal(false);
 
+    // Refresh notification bell
     window.dispatchEvent(new Event('appointmentBooked'));
     window.dispatchEvent(new Event('appointmentsUpdated'));
   };
 
+  // Cancel appointment
   const handleCancel = (appointmentId) => {
     const updatedAppointments = getAppointments().filter(
       appointment => appointment.id !== appointmentId
@@ -114,22 +154,30 @@ const DoctorCardItem = ({ doctor }) => {
       JSON.stringify(updatedAppointments)
     );
 
-    localStorage.removeItem(doctor.name);
-    localStorage.removeItem('doctorData');
+    // Remove legacy doctor-specific storage only
+    // if it belongs to the cancelled appointment.
+    const storedAppointment = JSON.parse(
+      localStorage.getItem(doctor.name) || 'null'
+    );
 
-    setAppointments(updatedAppointments.filter(
-      appointment => appointment.doctorName === doctor.name
-    ));
+    if (storedAppointment?.id === appointmentId) {
+      localStorage.removeItem(doctor.name);
+      localStorage.removeItem('doctorData');
+    }
 
+    refreshAppointments();
     setShowModal(false);
 
+    // Update notification bell
     window.dispatchEvent(new Event('appointmentCancelled'));
     window.dispatchEvent(new Event('appointmentsUpdated'));
   };
 
   return (
     <div className="doctor-card">
+
       <div className="doctor-card-details-container">
+
         <img
           src={doctor.image}
           alt={doctor.name}
@@ -137,6 +185,7 @@ const DoctorCardItem = ({ doctor }) => {
         />
 
         <h3>{doctor.name}</h3>
+
         <p>{doctor.speciality}</p>
 
         <p className="doctor-experience">
@@ -149,10 +198,14 @@ const DoctorCardItem = ({ doctor }) => {
         </div>
 
         <div className="doctor-card-options-container">
+
           <button
             type="button"
             className="book-appointment-btn"
-            onClick={() => setShowModal(true)}
+            onClick={() => {
+              refreshAppointments();
+              setShowModal(true);
+            }}
           >
             {appointments.length > 0
               ? 'View Appointment'
@@ -168,6 +221,7 @@ const DoctorCardItem = ({ doctor }) => {
             onClose={() => setShowModal(false)}
           >
             <div className="doctorbg">
+
               <img
                 src={doctor.image}
                 alt={doctor.name}
@@ -188,11 +242,25 @@ const DoctorCardItem = ({ doctor }) => {
                   </h3>
 
                   {appointments.map(appointment => (
-                    <div className="bookedInfo" key={appointment.id}>
-                      <p><strong>Name:</strong> {appointment.name}</p>
-                      <p><strong>Phone:</strong> {appointment.phoneNumber}</p>
-                      <p><strong>Date:</strong> {appointment.appointmentDate}</p>
-                      <p><strong>Time:</strong> {appointment.timeSlot}</p>
+                    <div
+                      className="bookedInfo"
+                      key={appointment.id}
+                    >
+                      <p>
+                        <strong>Name:</strong> {appointment.name}
+                      </p>
+
+                      <p>
+                        <strong>Phone:</strong> {appointment.phoneNumber}
+                      </p>
+
+                      <p>
+                        <strong>Date:</strong> {appointment.appointmentDate}
+                      </p>
+
+                      <p>
+                        <strong>Time:</strong> {appointment.timeSlot}
+                      </p>
 
                       <button
                         type="button"
@@ -210,8 +278,10 @@ const DoctorCardItem = ({ doctor }) => {
                   onSubmit={handleFormSubmit}
                 />
               )}
+
             </div>
           </Popup>
+
         </div>
       </div>
     </div>
@@ -221,6 +291,7 @@ const DoctorCardItem = ({ doctor }) => {
 const DoctorCard = () => {
   return (
     <div className="doctor-card-page">
+
       <h2>{doctors.length} doctors available</h2>
 
       <h3>
@@ -229,9 +300,13 @@ const DoctorCard = () => {
 
       <div className="doctor-card-list">
         {doctors.map(doctor => (
-          <DoctorCardItem key={doctor.id} doctor={doctor} />
+          <DoctorCardItem
+            key={doctor.id}
+            doctor={doctor}
+          />
         ))}
       </div>
+
     </div>
   );
 };
