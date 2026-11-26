@@ -13,12 +13,13 @@ import Notification from './Components/Notification/Notification';
 import DoctorCard from './Components/DoctorCard/DoctorCard';
 import BookingConsultation from './Components/BookingConsultation/BookingConsultation';
 import InstantConsultation from './Components/InstantConsultationBooking/InstantConsultation';
-import SignUp from './Sign_Up/Sign_Up';
+import SignUp from './Sign_Up/Sign_Up.jsx';
 import Login from './Login/Login';
 import ReviewForm from './Components/ReviewForm/ReviewForm';
 import MyAppointments from './Components/MyAppointments/MyAppointments';
 import ProfileCard from './Components/ProfileCard/ProfileCard';
 import ReportsLayout from './Components/ReportsLayout/ReportsLayout';
+import GiveReviews from './Components/ReviewForm/GiveReviews';
 
 import { API_URL } from './config';
 import './App.css';
@@ -332,52 +333,62 @@ function App() {
         </nav>
 
 
-        {/* APPLICATION ROUTES */}
+     {/* APPLICATION ROUTES */}
 
-        <Routes>
+<Routes>
 
-          <Route path="/" element={<Home />} />
+  <Route path="/" element={<Home />} />
 
-          <Route path="/doctors" element={<DoctorCard />} />
+  <Route path="/doctors" element={<DoctorCard />} />
 
-          <Route
-            path="/my-appointments"
-            element={<MyAppointments />}
-          />
+  <Route
+    path="/my-appointments"
+    element={<MyAppointments />}
+  />
 
-          <Route
-            path="/reports"
-            element={<ReportsLayout />}
-          />
+  <Route
+    path="/reports"
+    element={<ReportsLayout />}
+  />
 
-          <Route
-            path="/booking-consultation"
-            element={<BookingConsultation />}
-          />
+  <Route
+    path="/booking-consultation"
+    element={<BookingConsultation />}
+  />
 
-          <Route
-            path="/instant-consultation"
-            element={<InstantConsultation />}
-          />
+  <Route
+    path="/instant-consultation"
+    element={<InstantConsultation />}
+  />
 
-          <Route path="/reviews" element={<ReviewForm />} />
+  {/* Reviews */}
+  <Route
+    path="/reviews"
+    element={<ReviewForm />}
+  />
 
-          <Route path="/signup" element={<SignUp />} />
+  {/* Give Review */}
+  <Route
+    path="/give-review"
+    element={<GiveReviews />}
+  />
 
-          <Route path="/login" element={<Login />} />
+  <Route path="/signup" element={<SignUp />} />
 
-          <Route
-            path="/profile"
-            element={
-              <ProfileCard
-                user={user}
-                onUserUpdated={setUser}
-                onClose={() => navigate('/')}
-              />
-            }
-          />
+  <Route path="/login" element={<Login />} />
 
-        </Routes>
+  <Route
+    path="/profile"
+    element={
+      <ProfileCard
+        user={user}
+        onUserUpdated={setUser}
+        onClose={() => navigate('/')}
+      />
+    }
+  />
+
+</Routes>
 
       </Notification>
 
